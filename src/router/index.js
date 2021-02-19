@@ -7,7 +7,7 @@ const Home = () => import('views/home/Home')
 const Hot = () => import('views/hot/Hot')
 const Message = () => import('views/message/Message')
 const Profile = () => import('views/profile/Profile')
-
+const Register = ()=> import('views/register/Register')
 
 const routes = [
   {
@@ -30,6 +30,10 @@ const routes = [
     path:'/profile',
     component:Profile,
   },
+  {
+    path:'/register',
+    component:Register,
+  }
   // {
   //   // path:'/detail/:iid',
   //   path:'/detail',

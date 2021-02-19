@@ -19,6 +19,24 @@ module.exports={
         //也不需要给store起别名，因为到时候所有组件都可以通过this.$store,this.$router取出
       }
     }
+  },
+
+  css: {
+    loaderOptions: {
+      stylus: {
+        'resolve url': true,
+        'import': [
+          './src/theme'
+        ]
+      }
+    }
+  },
+
+  pluginOptions: {
+    'cube-ui': {
+      postCompile: true,
+      theme: true
+    }
   }
 }
 

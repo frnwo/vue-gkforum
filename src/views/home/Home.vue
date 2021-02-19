@@ -1,6 +1,9 @@
 <template>
   <div class="home">
-    <nav-bar class="home-nav"><div slot="center">广科校园论坛</div></nav-bar>
+    <nav-bar class="home-nav">
+      <div slot="left" @click="jumpRegister" class="register"><img src="~assets/img/common/register.png"/></div>
+      <div slot="center">广科校园论坛</div>
+      </nav-bar>
     <scroll
       class="content"
       ref="scroll"
@@ -71,6 +74,12 @@ export default {
       if(this.posts.current >= this.posts.totalPage) return;
       this.getDiscussPosts(10);
     },
+    //跳转到注册页面
+    jumpRegister(){
+      this.$router.push({
+        path:"/register"
+      })
+    }
   },
 };
 </script>
@@ -82,6 +91,10 @@ export default {
 .home-nav {
   background-color: #c8d6e5;
   color: #222f3e;
+}
+.register img{
+  width: 36px;
+  vertical-align: bottom;
 }
 .content {
   overflow: hidden;
