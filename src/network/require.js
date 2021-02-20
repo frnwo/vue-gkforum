@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const instance = axios.create({
   baseURL: 'http://localhost:8888/forum',
-  timeout: 5000,
+  timeout: 50000,
 })
 export function request(config) {
   // 浏览器请求时的拦截器：第一个参数是请求成功时回调，第二个参数是请求失败时回调

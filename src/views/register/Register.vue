@@ -1,6 +1,8 @@
 <template>
   <div id="register">
-    <div class="goback" @click="goback"><img src="~assets/img/common/goback.png"/></div>
+    <div class="goback" @click="goback">
+      <img src="~assets/img/common/goback.png" />
+    </div>
     <!-- 用户名 -->
     <cube-input
       v-model="username"
@@ -40,7 +42,7 @@
     ></cube-input>
     <!-- 密码validator-->
     <cube-validator
-     v-model="result[2]"
+      v-model="result[2]"
       ref="validator2"
       :model="password"
       :rules="pwdRules"
@@ -57,7 +59,7 @@
     <!-- 确认密码validator-->
 
     <cube-validator
-     v-model="result[3]"
+      v-model="result[3]"
       ref="validator3"
       :model="password_sure"
       :rules="pwdSureRules"
@@ -68,6 +70,8 @@
 </template>
 
 <script>
+import { register } from "network/register";
+
 export default {
   name: "Register",
   data() {
@@ -81,7 +85,7 @@ export default {
         open: false,
         reverse: false,
       },
-      result:[undefined,undefined,undefined,undefined],
+      result: [undefined, undefined, undefined, undefined],
       //邮箱验证规则
       eamilRules: {
         required: true,
@@ -102,55 +106,81 @@ export default {
       pwdRules: {
         required: true,
         type: "password",
-        pattern:/^[a-zA-Z]\w{6,18}$/,
+        pattern: /^[a-zA-Z]\w{6,18}$/,
       },
       pwdMessage: {
-        pattern:"数字、字母、下划线且以字母开头,密码长度在6到10位",
+        pattern: "数字、字母、下划线且以字母开头,密码长度在6到10位",
       },
       //确认密码验证
-      pwdSureRules:{
-        required:true,
-        type:"password",
-        custom:(val)=>{
-          return val==this.password
-        }
+      pwdSureRules: {
+        required: true,
+        type: "password",
+        custom: (val) => {
+          return val == this.password;
+        },
       },
-      pwdSureMessage:{
-        custom:"与第一个密码不一致！"
-      }
+      pwdSureMessage: {
+        custom: "与第一个密码不一致！",
+      },
     };
   },
   methods: {
-   goback(){
-     this.$router.go(-1)
-   },
-   submit() {
-      const p1 = this.$refs.validator0.validate()
-      const p2 = this.$refs.validator1.validate()
-      const p3 = this.$refs.validator2.validate()
-      const p4 = this.$refs.validator3.validate()
-      Promise.all([p1, p2, p3,p4]).then(() => {
-        if (this.result.every(item => item)) {
-          
-          //最终有效
-          this.$createToast({
-            type: 'correct',
-            txt: '注册成功,请激活邮件',
-            time: 2000
-          }).show()
-          this.$router.push({
-            path:'/home'
-          })
-        }
-      })
-    }
+    goback() {
+      this.$router.go(-1);
+    },
+    submit() {
+      const p1 = this.$refs.validator0.validate();
+      const p2 = this.$refs.validator1.validate();
+      const p3 = this.$refs.validator2.validate();
+      const p4 = this.$refs.validator3.validate();
+      const toast = this.$createToast({
+        time: 0,
+        txt: "正在注册中....",
+      });
+      Promise.all([p1, p2, p3, p4])
+        .then(() => {
+          if (this.result.every((item) => item)) {
+            //正在注册中的toast
+            toast.show();
+            return register(this.username, this.password, this.email);
+          }
+        })
+        .then((res) => {
+          // 隐藏正在注册的toast
+          toast.hide()
+          const myreg = res.data;
+          if (myreg.status == "success") {
+            // 显示注册成功toast
+            this.$createToast({
+              type: "correct",
+              txt: "注册成功,请激活邮件",
+              time: 2000,
+            }).show();
+            //跳转到首页
+            this.$router.push({
+              path: "/home",
+            });
+          } else {
+            //显示注册失败的toast 
+            const errMsg = Object.values(myreg).filter(item=>item!=null)[0];
+            this.$createToast({
+              type: "error",
+              txt: errMsg,
+              time: 2000,
+            }).show();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   mounted() {},
 };
 </script>
 
 <style scoped>
-#register{
+#register {
   position: relative;
   display: flex;
   flex-direction: row;
@@ -161,17 +191,16 @@ export default {
   height: 100vh;
   padding-bottom: 50px;
 }
-.goback{
+.goback {
   position: absolute;
   left: 5px;
-  top:5px;
+  top: 5px;
 }
-.goback img{
+.goback img {
   width: 36px;
-
 }
-#register>div{
-  width:100%;
+#register > div {
+  width: 100%;
   margin-bottom: 10px;
 }
 </style>
