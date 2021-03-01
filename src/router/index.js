@@ -9,6 +9,7 @@ const Message = () => import('views/message/Message')
 const Profile = () => import('views/profile/Profile')
 const Register = ()=> import('views/register/Register')
 const Login = ()=> import('views/login/Login')
+const Account = ()=> import('views/account/Account')
 const routes = [
   {
     path:'',
@@ -37,6 +38,10 @@ const routes = [
   {
     path:'/login',
     component:Login,
+  },
+  {
+    path:'/account',
+    component:Account,
   }
   // {
   //   // path:'/detail/:iid',

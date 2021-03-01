@@ -8,8 +8,12 @@ export function getDiscussPosts(current,limit) {
     }
   })
 }
-
-
+//退出
+export function logout() {
+  return request({
+    url:'/logout',
+  })
+}
 // export function getHomeMultidata(){
 //   return request({
 //     url:'/home/multidata'

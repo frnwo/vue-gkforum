@@ -12,7 +12,8 @@ export default new Vuex.Store({
     //this.$store.commit('login',数据)
     login(state,payload){
       state.loginMsg.username = payload;
-    }
+    },
+  
   },
   actions: {
   },

@@ -8,10 +8,16 @@
     </nav-bar>
     <div class="area">
       <div>
-        <div v-if="hasLogin">{{username}}</div>
+        <div v-if="hasLogin" @click="userClick">{{ username }}</div>
         <div @click="jumpLogin" v-else>登录</div>
       </div>
       <div @click="jumpRegister">注册</div>
+      <div class="dropdown" v-show="showDropDown">
+        <div>消息</div>
+        <div>个人首页</div>
+        <div>账号设置</div>
+        <div @click="logout">退出</div>
+      </div>
     </div>
     <posts-list :posts="posts.list" />
     <div class="pagnation">
@@ -36,7 +42,7 @@
 import NavBar from "components/common/navbar/NavBar";
 import PostsList from "components/content/posts/PostsList";
 
-import { getDiscussPosts } from "network/home";
+import { getDiscussPosts ,logout} from "network/home";
 
 export default {
   name: "Home",
@@ -49,16 +55,21 @@ export default {
   data() {
     return {
       posts: { current: 0, list: [], totalPage: 0, from: 0, to: 0 },
+      showDropDown:false,
     };
   },
   computed: {
     hasLogin() {
-
-      return this.$store.state.loginMsg.username || localStorage.getItem("loginMsg");
+      return (
+        this.$store.state.loginMsg.username || localStorage.getItem("loginMsg")
+      );
     },
-    username(){
-      return this.$store.state.loginMsg.username || localStorage.getItem("loginMsg");
-    }
+    username() {
+      return (
+        this.$store.state.loginMsg.username || localStorage.getItem("loginMsg")
+      );
+    },
+    
   },
   created() {
     this.getDiscussPosts(1, 20);
@@ -99,8 +110,29 @@ export default {
     //分页跳转
     jumpPage(page) {
       this.getDiscussPosts(page, 20);
+      //回到顶部
+      // this.$nextTick(() => {
+        document.documentElement.scrollTop = 0;
+      // });
     },
-    
+    //退出
+    logout(){
+      console.log("退出")
+      logout().then(res=>{
+        //删除的vuex和localStorage的loginMsg
+        if(res.data=="ok"){
+          this.$store.commit('login',undefined);
+          localStorage.removeItem("loginMsg")
+          //刷新页面
+          this.$router.go(0)
+        }
+      })
+    },
+    //点击用户名显示下拉框
+    userClick(){
+      this.showDropDown = !this.showDropDown;
+    },
+
   },
 };
 </script>
@@ -125,7 +157,18 @@ export default {
   cursor: pointer;
   padding-right: 10px;
 }
-
+.dropdown{
+  background-color: pink;
+  position: absolute;
+  text-align: center;
+  width: 100px;
+  left: 0;
+  top:25px;
+  border-radius: 5px;
+}
+.dropdown div{
+  padding: 5px 0;
+}
 .home-nav {
   position: fixed;
   width: 100%;

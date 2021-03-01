@@ -1,7 +1,7 @@
 <template>
   <div id="appzzz">
     <!-- <keep-alive exclude="Detail"> -->
-    <keep-alive exclude="Register">
+    <keep-alive exclude="Register,Home">
       <router-view />
     </keep-alive>
     <!-- <main-tab-bar></main-tab-bar> -->
