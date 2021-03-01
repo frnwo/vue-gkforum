@@ -1,71 +1,79 @@
 <template>
-  <div id="register">
-    <div class="goback" @click="goback">
-      <img src="~assets/img/common/goback.png" />
+  <div id="bg_container">
+    <div id="register">
+      <!-- <div class="goback" @click="goback">
+        <img src="~assets/img/common/goback.png" />
+      </div> -->
+      <div class="jump-login" @click="jumpLogin">
+        <span>已有账号？去</span><img src="~assets/img/common/login.png" />
+      </div>
+      <!-- 用户名 -->
+      <cube-input
+        v-model="username"
+        placeholder="请输入用户名"
+        :autofocus="autofocus"
+      ></cube-input>
+      <!-- 用户名validator-->
+      <cube-validator
+        ref="validator0"
+        v-model="result[0]"
+        :model="username"
+        :rules="nameRules"
+        :messages="nameMessage"
+        class="validate1"
+      ></cube-validator>
+
+      <!-- 邮箱 -->
+      <cube-input
+        v-model="email"
+        placeholder="请输入邮箱"
+        type="email"
+      ></cube-input>
+      <!-- 邮箱validator-->
+
+      <cube-validator
+        v-model="result[1]"
+        ref="validator1"
+        :model="email"
+        :rules="eamilRules"
+        class="validate2"
+      ></cube-validator>
+      <!-- 密码 -->
+      <cube-input
+        v-model="password"
+        placeholder="请输入密码"
+        type="password"
+        :eye="eye"
+      ></cube-input>
+      <!-- 密码validator-->
+      <cube-validator
+        v-model="result[2]"
+        ref="validator2"
+        :model="password"
+        :rules="pwdRules"
+        :messages="pwdMessage"
+        class="validate3"
+      ></cube-validator>
+
+      <!-- 确认密码 -->
+      <cube-input
+        v-model="password_sure"
+        placeholder="请再次确认密码"
+        type="password"
+        :eye="eye"
+      ></cube-input>
+      <!-- 确认密码validator-->
+
+      <cube-validator
+        v-model="result[3]"
+        ref="validator3"
+        :model="password_sure"
+        :rules="pwdSureRules"
+        :messages="pwdSureMessage"
+        class="validate4"
+      ></cube-validator>
+      <cube-button :primary="true" @click="submit" class="reg_btn">注册</cube-button>
     </div>
-    <!-- 用户名 -->
-    <cube-input
-      v-model="username"
-      placeholder="请输入用户名"
-      :autofocus="autofocus"
-    ></cube-input>
-    <!-- 用户名validator-->
-    <cube-validator
-      ref="validator0"
-      v-model="result[0]"
-      :model="username"
-      :rules="nameRules"
-      :messages="nameMessage"
-    ></cube-validator>
-
-    <!-- 邮箱 -->
-
-    <cube-input
-      v-model="email"
-      placeholder="请输入邮箱"
-      type="email"
-    ></cube-input>
-    <!-- 邮箱validator-->
-
-    <cube-validator
-      v-model="result[1]"
-      ref="validator1"
-      :model="email"
-      :rules="eamilRules"
-    ></cube-validator>
-    <!-- 密码 -->
-    <cube-input
-      v-model="password"
-      placeholder="请输入密码"
-      type="password"
-      :eye="eye"
-    ></cube-input>
-    <!-- 密码validator-->
-    <cube-validator
-      v-model="result[2]"
-      ref="validator2"
-      :model="password"
-      :rules="pwdRules"
-      :messages="pwdMessage"
-    ></cube-validator>
-
-    <!-- 确认密码 -->
-    <cube-input
-      v-model="password_sure"
-      placeholder="请再次确认密码"
-      type="password"
-      :eye="eye"
-    ></cube-input>
-    <!-- 确认密码validator-->
-
-    <cube-validator
-      v-model="result[3]"
-      ref="validator3"
-      :model="password_sure"
-      :rules="pwdSureRules"
-      :messages="pwdSureMessage"
-    ></cube-validator>
-    <cube-button :primary="true" @click="submit">注册</cube-button>
   </div>
 </template>
 
@@ -147,7 +155,7 @@ export default {
         })
         .then((res) => {
           // 隐藏正在注册的toast
-          toast.hide()
+          toast.hide();
           const myreg = res.data;
           if (myreg.status == "success") {
             // 显示注册成功toast
@@ -161,8 +169,10 @@ export default {
               path: "/home",
             });
           } else {
-            //显示注册失败的toast 
-            const errMsg = Object.values(myreg).filter(item=>item!=null)[0];
+            //显示注册失败的toast
+            const errMsg = Object.values(myreg).filter(
+              (item) => item != null
+            )[0];
             this.$createToast({
               type: "error",
               txt: errMsg,
@@ -174,12 +184,22 @@ export default {
           console.log(err);
         });
     },
+    //跳转到登录页面
+    jumpLogin() {
+      this.$router.push({
+        path: "/login",
+      });
+    },
   },
   mounted() {},
 };
 </script>
 
 <style scoped>
+#bg_container{
+  background:url(~assets/img/common/register/bg2.jpg);
+  background-size: cover;
+}
 #register {
   position: relative;
   display: flex;
@@ -188,19 +208,63 @@ export default {
   align-content: center;
   flex-wrap: wrap;
   padding: 0 20px;
+  width: 25%;
+  margin: 0 auto;
   height: 100vh;
+  padding-top: 100px;
   padding-bottom: 50px;
 }
 .goback {
   position: absolute;
   left: 5px;
-  top: 5px;
+  top: 100px;
 }
+
 .goback img {
   width: 36px;
 }
+
 #register > div {
   width: 100%;
   margin-bottom: 10px;
+}
+#register .jump-login {
+  position: absolute;
+  width: 210px;
+  height: 48px;
+  right: 5px;
+  top: 100px;
+  text-align: center;
+  color: rgb(247, 114, 136);
+  cursor: pointer;
+}
+.jump-login img {
+  vertical-align: middle;
+  width: 48px;
+  height: 40px;
+}
+.reg_btn{
+  border-radius: 40px;
+  width: 70%;
+}
+.validate1{
+  position: absolute;
+  top:210px;
+  left: 290px;
+}
+.validate2{
+  position: absolute;
+  top:260px;
+  left: 290px;
+}
+.validate3{
+  position: absolute;
+  top:295px;
+  left: 290px;
+}
+.validate4{
+  position: absolute;
+  top:355px;
+  left: 290px;
 }
 </style>

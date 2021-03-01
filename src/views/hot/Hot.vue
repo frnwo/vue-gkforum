@@ -1,6 +1,6 @@
 <template>
   <div class="hot">
-    热门
+
   </div>
 </template>
 
@@ -8,9 +8,7 @@
 // @ is an alias to /src
 
 export default {
-  name: 'Hot',
-  components: {
-    
-  }
-}
+  name: "Hot",
+  components: {},
+};
 </script>

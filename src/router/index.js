@@ -8,7 +8,7 @@ const Hot = () => import('views/hot/Hot')
 const Message = () => import('views/message/Message')
 const Profile = () => import('views/profile/Profile')
 const Register = ()=> import('views/register/Register')
-
+const Login = ()=> import('views/login/Login')
 const routes = [
   {
     path:'',
@@ -33,6 +33,10 @@ const routes = [
   {
     path:'/register',
     component:Register,
+  },
+  {
+    path:'/login',
+    component:Login,
   }
   // {
   //   // path:'/detail/:iid',

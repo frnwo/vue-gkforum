@@ -1,5 +1,6 @@
 import axios from 'axios'
-
+// 携带cookie
+axios.defaults.withCredentials=true;
 const instance = axios.create({
   baseURL: 'http://localhost:8888/forum',
   timeout: 50000,

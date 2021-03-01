@@ -1,30 +1,40 @@
 <template>
   <div class="home">
     <nav-bar class="home-nav">
-      <div slot="left" @click="jumpRegister" class="register"><img src="~assets/img/common/register.png"/></div>
+      <!-- <div slot="left" @click="jumpRegister" class="register">
+        <img src="~assets/img/common/register.png" />
+      </div> -->
       <div slot="center">广科校园论坛</div>
-      </nav-bar>
-    <scroll
-      class="content"
-      ref="scroll"
-      :probe-type="3"
-      @scroll="contentScroll"
-      :pull-up-load="true"
-      @pullingUp="loadMore"
-    >
-      <posts-list :posts="posts.list" />
-    </scroll>
-    <back-top @click.native="backTop" v-show="isShowBackTop"/>
-
+    </nav-bar>
+    <div class="area">
+      <div>
+        <div v-if="hasLogin">{{username}}</div>
+        <div @click="jumpLogin" v-else>登录</div>
+      </div>
+      <div @click="jumpRegister">注册</div>
+    </div>
+    <posts-list :posts="posts.list" />
+    <div class="pagnation">
+      <span @click="jumpPage(1)">首页</span>
+      <span @click="jumpPage(posts.current - 1)">上页</span>
+      <div v-for="n in posts.to" :key="n">
+        <span
+          @click="jumpPage(n)"
+          v-if="n >= posts.from"
+          :class="{ active: n == posts.current }"
+        >
+          {{ n }}
+        </span>
+      </div>
+      <span @click="jumpPage(posts.current + 1)">下页</span>
+      <span @click="jumpPage(posts.totalPage)">末页</span>
+    </div>
   </div>
 </template>
 
 <script>
 import NavBar from "components/common/navbar/NavBar";
-import Scroll from "components/common/scroll/Scroll";
 import PostsList from "components/content/posts/PostsList";
-
-import {itemListListener,backTop} from 'common/mixins';
 
 import { getDiscussPosts } from "network/home";
 
@@ -32,76 +42,114 @@ export default {
   name: "Home",
   components: {
     NavBar,
-    Scroll,
     PostsList,
 
     getDiscussPosts,
   },
   data() {
     return {
-      posts: { current: 0,  list: [] ,totalPage:0},
-      isShowBackTop:false,
+      posts: { current: 0, list: [], totalPage: 0, from: 0, to: 0 },
     };
   },
-  mixins:[itemListListener,backTop],
+  computed: {
+    hasLogin() {
+
+      return this.$store.state.loginMsg.username || localStorage.getItem("loginMsg");
+    },
+    username(){
+      return this.$store.state.loginMsg.username || localStorage.getItem("loginMsg");
+    }
+  },
   created() {
-    this.getDiscussPosts(1,10);
+    this.getDiscussPosts(1, 20);
   },
   methods: {
-    getDiscussPosts(limit) {
-      const current = this.posts.current+1;
-      getDiscussPosts(current,limit)
+    getDiscussPosts(current, limit) {
+      getDiscussPosts(current, limit)
         .then((res) => {
           const pageInfo = res.data.pop();
           //总共页数
           this.posts.totalPage = pageInfo.totalPage;
           //获取posts
-          this.posts.list.push(...res.data);
-          this.posts.current++;
-          this.$refs.scroll.finishPullUp();
-          console.log(res.data);
+          this.posts.list = res.data;
+          this.posts.current = current;
+          this.posts.from = current - 2 <= 0 ? 1 : current - 2;
+          this.posts.to =
+            current + 2 > this.posts.totalPage
+              ? this.posts.totalPage
+              : current + 2;
         })
         .catch((err) => {
           console.log(err);
         });
     },
-    contentScroll(position) {
-      // this.$refs.scroll.refresh();
-      this.isShowBackTop = -position.y > 400;
-    },
-    loadMore() {
-      console.log("pulling up");
-      if(this.posts.current >= this.posts.totalPage) return;
-      this.getDiscussPosts(10);
-    },
+
     //跳转到注册页面
-    jumpRegister(){
+    jumpRegister() {
       this.$router.push({
-        path:"/register"
-      })
-    }
+        path: "/register",
+      });
+    },
+    //跳转登录
+    jumpLogin() {
+      this.$router.push({
+        path: "/login",
+      });
+    },
+    //分页跳转
+    jumpPage(page) {
+      this.getDiscussPosts(page, 20);
+    },
+    
   },
 };
 </script>
 <style scoped>
 .home {
   position: relative;
-  height: 100vh;
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 44px;
 }
+.area {
+  position: fixed;
+  display: flex;
+  width: 300px;
+  height: 44px;
+  z-index: 99999;
+  left: 800px;
+  top: 10px;
+  font-size: 20px;
+}
+.area div {
+  cursor: pointer;
+  padding-right: 10px;
+}
+
 .home-nav {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 99;
   background-color: #c8d6e5;
   color: #222f3e;
 }
-.register img{
+.register img {
   width: 36px;
   vertical-align: bottom;
 }
-.content {
-  overflow: hidden;
-  position: absolute;
-  top: 44px;
-  bottom: 49px;
-  left: 0;
-  right: 0;
+.pagnation {
+  width: 70%;
+  margin: 0 auto;
+  display: flex;
+}
+.pagnation .active {
+  color: red;
+}
+.pagnation span {
+  display: inline-block;
+  padding: 10px;
+  cursor: pointer;
 }
 </style>

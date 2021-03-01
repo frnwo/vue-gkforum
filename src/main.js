@@ -4,7 +4,6 @@ import Cube from 'cube-ui'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-
 Vue.config.productionTip = false
 // 添加事件总线对象
 Vue.prototype.$bus = new Vue()
