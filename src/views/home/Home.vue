@@ -1,21 +1,19 @@
 <template>
   <div class="home">
     <nav-bar class="home-nav">
-      <!-- <div slot="left" @click="jumpRegister" class="register">
-        <img src="~assets/img/common/register.png" />
-      </div> -->
-      <div slot="center">广科校园论坛</div>
+      <div slot="center"  @click="gohome">广科校园论坛</div>
     </nav-bar>
     <div class="area">
-      <div>
-        <div v-if="hasLogin" @click="userClick">{{ username }}</div>
+      <div class="user">
+        <div v-if="hasLogin" @click="userClick" class="login">
+          <img :src="headerUrl" class="header"/>{{ username }}</div>
         <div @click="jumpLogin" v-else>登录</div>
       </div>
-      <div @click="jumpRegister">注册</div>
+      <div @click="jumpRegister" class="register" v-show="!hasLogin">注册</div>
       <div class="dropdown" v-show="showDropDown">
         <div>消息</div>
         <div>个人首页</div>
-        <div>账号设置</div>
+        <div @click="account">账号设置</div>
         <div @click="logout">退出</div>
       </div>
     </div>
@@ -69,6 +67,9 @@ export default {
         this.$store.state.loginMsg.username || localStorage.getItem("loginMsg")
       );
     },
+    headerUrl(){
+      return localStorage.getItem("loginHeaderUrl")
+    }
     
   },
   created() {
@@ -132,7 +133,18 @@ export default {
     userClick(){
       this.showDropDown = !this.showDropDown;
     },
-
+    //账号设置
+    account(){
+      this.$router.push({
+        path:"/account"
+      })
+    },
+    //点击头部到首页
+    gohome(){
+      this.$router.push({
+        path:"/home",
+      })
+    }
   },
 };
 </script>
@@ -150,12 +162,26 @@ export default {
   height: 44px;
   z-index: 99999;
   left: 800px;
-  top: 10px;
+  top: 0;
   font-size: 20px;
 }
 .area div {
   cursor: pointer;
   padding-right: 10px;
+}
+.area .user .login,.register{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.area .user .login{
+  height: 100%;
+}
+.area .header{
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 .dropdown{
   background-color: pink;
@@ -163,7 +189,7 @@ export default {
   text-align: center;
   width: 100px;
   left: 0;
-  top:25px;
+  top:44px;
   border-radius: 5px;
 }
 .dropdown div{
@@ -178,9 +204,8 @@ export default {
   background-color: #c8d6e5;
   color: #222f3e;
 }
-.register img {
-  width: 36px;
-  vertical-align: bottom;
+.home-nav div:first-child{
+  cursor: pointer;
 }
 .pagnation {
   width: 70%;

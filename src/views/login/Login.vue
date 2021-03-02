@@ -1,65 +1,64 @@
 <template>
-<div id="login_container">
-  
-  <div id="login">
-    <!-- <div>{{$store.state.loginMsg}}</div> -->
-    <!-- <div class="goback" @click="goback">
-      <img src="~assets/img/common/goback.png" />
-    </div> -->
-    <!-- 用户名 -->
-    <cube-input
-      v-model="username"
-      placeholder="请输入登录用户名"
-      :autofocus="autofocus"
-    ></cube-input>
-    <!-- 用户名validator-->
-    <cube-validator
-      ref="validator0"
-      v-model="result[0]"
-      :model="username"
-      :rules="nameRules"
-      class="vali1"
-    ></cube-validator>
-
-    <!-- 密码 -->
-    <cube-input
-      v-model="password"
-      placeholder="请输入登录密码"
-      type="password"
-      :eye="eye"
-    ></cube-input>
-    <!-- 密码validator-->
-    <cube-validator
-      v-model="result[1]"
-      ref="validator1"
-      :model="password"
-      :rules="pwdRules"
-      class="vali2"
-    ></cube-validator>
-    <div class="kaptcha-area">
-      <!-- 验证码input -->
+  <div id="login_container">
+    <div id="login">
       <cube-input
-        v-model="kaptcha"
-        placeholder="请输入右方的验证码"
-        type="text"
+        v-model="username"
+        placeholder="请输入登录用户名"
+        :autofocus="autofocus"
       ></cube-input>
-      <!-- 验证码validator-->
+      <!-- 用户名validator-->
       <cube-validator
-        v-model="result[2]"
-        ref="validator2"
-        :model="kaptcha"
-        :rules="kaptchaRules"
-        class="vali3"
-      >
-      </cube-validator>
-      <!-- 验证码图片 -->
-      <div class="kaptcha-img">
-        <img src="http://localhost:8888/forum/kaptcha" @click="refreshKaptcha"/>
-      </div>
-    </div>
+        ref="validator0"
+        v-model="result[0]"
+        :model="username"
+        :rules="nameRules"
+        class="vali1"
+      ></cube-validator>
 
-    <cube-button :outline="true" @click="submit" class="login-btn">登录</cube-button>
-  </div>
+      <!-- 密码 -->
+      <cube-input
+        v-model="password"
+        placeholder="请输入登录密码"
+        type="password"
+        :eye="eye"
+      ></cube-input>
+      <!-- 密码validator-->
+      <cube-validator
+        v-model="result[1]"
+        ref="validator1"
+        :model="password"
+        :rules="pwdRules"
+        class="vali2"
+      ></cube-validator>
+      <div class="kaptcha-area">
+        <!-- 验证码input -->
+        <cube-input
+          v-model="kaptcha"
+          placeholder="请输入右方的验证码"
+          type="text"
+        ></cube-input>
+        <!-- 验证码validator-->
+        <cube-validator
+          v-model="result[2]"
+          ref="validator2"
+          :model="kaptcha"
+          :rules="kaptchaRules"
+          class="vali3"
+        >
+        </cube-validator>
+        <!-- 验证码图片 -->
+        <div class="kaptcha-img">
+          <img
+            src="http://localhost:8888/forum/kaptcha"
+            @click="refreshKaptcha"
+          />
+        </div>
+      </div>
+
+      <cube-button :outline="true" @click="submit" class="login-btn"
+        >登录</cube-button
+      >
+    </div>
   </div>
 </template>
 
@@ -113,19 +112,20 @@ export default {
           if (this.result.every((item) => item)) {
             //正在登录中的toast
             toast.show();
-            return login(this.username, this.password,this.kaptcha);
+            return login(this.username, this.password, this.kaptcha);
           }
         })
         .then((res) => {
           // 隐藏正在登录的toast
           toast.hide();
           const mylogin = res.data;
-          console.log(res) 
+          console.log(res);
           if (mylogin.status == "ok") {
             // 登录成功后把用户信息存进vuex和localstorage
             // this.$store.loginMsg.username = this.username;
-            this.$store.commit('login',this.username);
-            localStorage.setItem("loginMsg",this.username)
+            this.$store.commit("login", this.username);
+            localStorage.setItem("loginMsg", this.username);
+            localStorage.setItem("loginHeaderUrl",mylogin.user.headerUrl)
             //跳转到首页
             this.$router.push({
               path: "/home",
@@ -146,14 +146,12 @@ export default {
           console.log(err);
         });
     },
-    refreshKaptcha(e){
+    refreshKaptcha(e) {
       //刷新验证码
-      e.target.src = "http://localhost:8888/forum/kaptcha?p="+Math.random();
-    }
+      e.target.src = "http://localhost:8888/forum/kaptcha?p=" + Math.random();
+    },
   },
-  mounted() {
-   
-  },
+  mounted() {},
 };
 </script>
 
@@ -169,10 +167,9 @@ export default {
   padding: 0 20px;
   height: 100vh;
   padding-bottom: 50px;
-
 }
-#login_container{
-    background: url(~assets/img/common/login/bg.jpg);
+#login_container {
+  background: url(~assets/img/common/login/bg.jpg);
 }
 .goback {
   position: absolute;
@@ -192,33 +189,29 @@ export default {
   display: flex;
   position: relative;
 }
-#login .kaptcha-area div{
+#login .kaptcha-area div {
   flex-grow: 1;
-
 }
-#login .kaptcha-area div:nth-child(2){
+#login .kaptcha-area div:nth-child(2) {
   position: absolute;
   left: 20px;
   bottom: -20px;
 }
-.kaptcha-img{
+.kaptcha-img {
   margin-left: 10px;
 }
-.login-btn{
+.login-btn {
   margin-top: 40px;
   background-color: #ffb8b8;
-
 }
-.vali1{
+.vali1 {
   position: absolute;
-  left:300px;
-  top:160px;
-
+  left: 300px;
+  top: 160px;
 }
-.vali2{
+.vali2 {
   position: absolute;
-  left:300px;
-  top:210px;
-  
+  left: 300px;
+  top: 210px;
 }
 </style>

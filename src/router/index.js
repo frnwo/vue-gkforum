@@ -42,6 +42,7 @@ const routes = [
   {
     path:'/account',
     component:Account,
+    meta: {login_required: true}
   }
   // {
   //   // path:'/detail/:iid',
