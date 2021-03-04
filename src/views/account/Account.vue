@@ -184,6 +184,8 @@ export default {
         updatePhoto(this.photo).then((res) => {
           toast.hide();
           if (res.data.status == "ok") {
+            //修改localStorage里面的headerUrl(登录时存进去的)
+            localStorage.setItem("loginHeaderUrl",res.data.headerUrl)
             this.$createToast({
               type: "success",
               txt: "修改头像成功",
@@ -235,6 +237,12 @@ export default {
   align-items: center;
 }
 .area .user .login{
+  height: 100%;
+}
+.area .user div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100%;
 }
 .area .header{

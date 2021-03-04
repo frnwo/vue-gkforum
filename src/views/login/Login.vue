@@ -54,10 +54,11 @@
           />
         </div>
       </div>
-
+      
       <cube-button :outline="true" @click="submit" class="login-btn"
         >登录</cube-button
       >
+      <cube-checkbox v-model="checked" style="font-size:16px">记住我</cube-checkbox>
     </div>
   </div>
 </template>
@@ -93,6 +94,7 @@ export default {
         required: true,
         type: "text",
       },
+      checked:true
     };
   },
   methods: {
@@ -112,7 +114,7 @@ export default {
           if (this.result.every((item) => item)) {
             //正在登录中的toast
             toast.show();
-            return login(this.username, this.password, this.kaptcha);
+            return login(this.username, this.password, this.kaptcha,this.checked);
           }
         })
         .then((res) => {
@@ -125,7 +127,7 @@ export default {
             // this.$store.loginMsg.username = this.username;
             this.$store.commit("login", this.username);
             localStorage.setItem("loginMsg", this.username);
-            localStorage.setItem("loginHeaderUrl",mylogin.user.headerUrl)
+            localStorage.setItem("loginHeaderUrl", mylogin.user.headerUrl);
             //跳转到首页
             this.$router.push({
               path: "/home",
